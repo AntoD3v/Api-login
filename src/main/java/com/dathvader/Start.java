@@ -1,7 +1,7 @@
 package com.dathvader;
 
 import com.dathvader.data.Cache;
-import com.dathvader.data.Replication;
+import com.dathvader.data.LoginDataBase;
 import com.dathvader.handler.handlePostLogin;
 import com.dathvader.handler.handlePostToken;
 import io.vertx.core.AbstractVerticle;
@@ -10,12 +10,12 @@ import io.vertx.ext.web.handler.BodyHandler;
 
 public class Start extends AbstractVerticle {
 
-    private final Replication replication;
+    private final LoginDataBase loginDataBase;
     private final Cache cache;
 
-    public Start(Replication replication, Cache cache) {
+    public Start(LoginDataBase loginDataBase, Cache cache) {
         this.cache = cache;
-        this.replication = replication;
+        this.loginDataBase = loginDataBase;
     }
 
     public void start() {
@@ -23,7 +23,7 @@ public class Start extends AbstractVerticle {
         final Router router = Router.router(vertx);
 
         router.route().handler(BodyHandler.create());
-        router.post("/auth/login").handler(new handlePostLogin(replication, cache));
+        router.post("/auth/login").handler(new handlePostLogin(loginDataBase, cache));
         router.post("/auth/token").handler(new handlePostToken(cache));
 
         vertx.createHttpServer().requestHandler(router).listen(8080);

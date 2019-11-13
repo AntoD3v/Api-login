@@ -1,7 +1,7 @@
 package com.dathvader.handler;
 
 import com.dathvader.data.Cache;
-import com.dathvader.data.Replication;
+import com.dathvader.data.LoginDataBase;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 
@@ -10,12 +10,12 @@ import java.security.NoSuchAlgorithmException;
 
 public class handlePostLogin implements Handler<RoutingContext> {
 
-    private final Replication replication;
+    private final LoginDataBase dataBase;
     private final Cache cache;
 
-    public handlePostLogin(Replication replication, Cache cache) {
+    public handlePostLogin(LoginDataBase dataBase, Cache cache) {
         this.cache = cache;
-        this.replication = replication;
+        this.dataBase = dataBase;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class handlePostLogin implements Handler<RoutingContext> {
             String username = routingContext.request().getParam("username");
             String password = routingContext.request().getParam("password");
 
-            replication.getClient(username, response -> {
+            dataBase.getPlayerInformations(username, response -> {
                 if(response != null) {
 
                     if (response.equals(sha1(password))) {
