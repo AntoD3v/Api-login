@@ -1,2 +1,2 @@
 # Api-login
-API Login created by AntoDev &amp; Acterax
+API Login created and designed by Acterax &amp; AntoZzz 
