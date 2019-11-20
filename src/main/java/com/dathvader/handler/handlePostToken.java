@@ -1,14 +1,14 @@
 package com.dathvader.handler;
 
-import com.dathvader.data.Cache;
+import com.dathvader.data.JedisConnection;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 
 public class handlePostToken implements Handler<RoutingContext> {
 
-    private final Cache cache;
+    private final JedisConnection cache;
 
-    public handlePostToken(Cache cache) {
+    public handlePostToken(JedisConnection cache) {
         this.cache = cache;
     }
 

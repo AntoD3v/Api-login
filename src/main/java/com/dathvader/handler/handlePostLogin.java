@@ -1,21 +1,22 @@
 package com.dathvader.handler;
 
-import com.dathvader.data.Cache;
-import com.dathvader.data.LoginDataBase;
+import com.dathvader.data.DataSet;
+import com.dathvader.data.JedisConnection;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
+import net.sf.jsqlparser.expression.StringValue;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class handlePostLogin implements Handler<RoutingContext> {
 
-    private final LoginDataBase dataBase;
-    private final Cache cache;
+    private final DataSet dataSet;
+    private final JedisConnection cache;
 
-    public handlePostLogin(LoginDataBase dataBase, Cache cache) {
+    public handlePostLogin(DataSet dataSet, JedisConnection cache) {
         this.cache = cache;
-        this.dataBase = dataBase;
+        this.dataSet = dataSet;
     }
 
     @Override
@@ -24,20 +25,23 @@ public class handlePostLogin implements Handler<RoutingContext> {
 
             String username = routingContext.request().getParam("username");
             String password = routingContext.request().getParam("password");
+            dataSet.getClients().forEach((user, pass) -> {
+                System.out.println(user +"  -  "+pass+" mm "+new StringValue("test3").getValue().equals(user));
+            });
 
-            dataBase.getPlayerInformations(username, response -> {
-                if(response != null) {
+            System.out.println(dataSet.hasAccount(username)+"'"+username+"'"+dataSet.getClients().containsKey(username)+"---"+"test3".equals(username));
+            if(dataSet.hasAccount(username)){
+                System.out.println("'"+username+"'");
 
-                    if (response.equals(sha1(password))) {
+                if(dataSet.isLoginWith(username, sha1(password))){
 
-                        final String re = "{\"STATUS\": \"Connected\", \"TOKEN\": \""+cache.generateToken(username)+"\"}";
-                        routingContext.response().putHeader("content-length", String.valueOf(re.length()));
-                        routingContext.response().setStatusCode(200);
-                        routingContext.response().end(re);
+                    final String re = "{\"STATUS\": \"Connected\", \"TOKEN\": \""+cache.generateToken(username)+"\"}";
+                    routingContext.response().putHeader("content-length", String.valueOf(re.length()));
+                    routingContext.response().setStatusCode(200);
+                    routingContext.response().end(re);
+                    return;
 
-                        return;
-
-                    }
+                }else {
 
                     final String re = "{\"STATUS\": \"Bad password\"}";
                     routingContext.response().putHeader("content-length", String.valueOf(re.length()));
@@ -46,13 +50,17 @@ public class handlePostLogin implements Handler<RoutingContext> {
                     return;
                 }
 
-                final String re = "{\"STATUS\": \"Not player found\"}";
+            }else{
+
+                final String re = "{\"STATUS\": \"Client not found\"}";
                 routingContext.response().putHeader("content-length", String.valueOf(re.length()));
                 routingContext.response().setStatusCode(404);
                 routingContext.response().end(re);
                 return;
 
-            });
+            }
+
+
         }catch (Exception e){
             e.printStackTrace();
 

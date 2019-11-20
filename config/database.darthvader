@@ -1,0 +1,7 @@
+host=68.183.46.163
+port=3306
+user=api
+password=PUe3m9
+log_binary=mysql-bin.000001
+log_position=4
+Join our discord https://discord.gg/C6GUVa9

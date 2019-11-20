@@ -17,7 +17,9 @@ public class AverageCalc {
                 while (true) {
                     try {
                         sleep(1000);
-                        System.out.println("Average for " + name + " is " + calcAverage());
+                        double aver;
+                        if((aver = calcAverage()) != -1)
+                            System.out.println("Average for " + name + " is " + aver);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

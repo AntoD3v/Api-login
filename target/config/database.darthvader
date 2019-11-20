@@ -1,7 +1,0 @@
-database=players
-user=root
-password=PUe3m9
-master=127.0.0.1:007
-slaves=68.183.46.163:3306,167.99.82.35:3306,68.183.38.210:3306,68.183.46.107:3306
-
-Join our discord https://discord.gg/C6GUVa9

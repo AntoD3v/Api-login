@@ -5,6 +5,7 @@ import java.io.*;
 public abstract class APIFiles {
 
     private File file;
+    private boolean doExit = false;
 
     public APIFiles(String fileName) throws IOException {
         this.file = new File(fileName);
@@ -13,13 +14,11 @@ public abstract class APIFiles {
             this.file.getParentFile().mkdirs();
             this.file.createNewFile();
 
-            System.out.println("Config file doesn't yet exist, creating ...");
+            System.out.println("Config "+fileName+" doesn't yet exist, creating ...");
 
             this.writeFully(getDefaultConfig());
 
-            System.out.println("Config file were successfully created, configure it then start again");
-
-            System.exit(1);
+            doExit = true;
         } else {
             this.readFully();
         }
@@ -46,4 +45,8 @@ public abstract class APIFiles {
     public abstract void lineRead(String line);
 
     public abstract String[] getDefaultConfig();
+
+    public boolean isDoExit() {
+        return doExit;
+    }
 }
