@@ -70,10 +70,16 @@ public class QueryEvent implements BinaryLogClient.EventListener {
 
     public String parseString(ItemsList itemsList, int i) {
         Expression expression = ((ExpressionList)itemsList).getExpressions().get(i);
-        if (expression instanceof net.sf.jsqlparser.schema.Column)
-            return ((net.sf.jsqlparser.schema.Column) expression).getColumnName();
+        if (expression instanceof net.sf.jsqlparser.schema.Column) {
+            return parse(((net.sf.jsqlparser.schema.Column) expression).getColumnName());
+        }
         if (expression instanceof StringValue)
-            return ((StringValue)expression).getValue();
+            return parse(((StringValue)expression).toString());
         return null;
+    }
+
+
+    public String parse(String value){
+        return value.replace("\"", "");
     }
 }

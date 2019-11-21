@@ -1,5 +1,6 @@
 package com.dathvader.handler;
 
+import com.dathvader.average.AverageCalc;
 import com.dathvader.data.DataSet;
 import com.dathvader.data.JedisConnection;
 import io.vertx.core.Handler;
@@ -11,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class handlePostLogin implements Handler<RoutingContext> {
 
+    private final AverageCalc averageCalc = new AverageCalc("request");
     private final DataSet dataSet;
     private final JedisConnection cache;
 
@@ -22,16 +24,11 @@ public class handlePostLogin implements Handler<RoutingContext> {
     @Override
     public void handle(RoutingContext routingContext) {
         try{
-
+            long begin = System.currentTimeMillis();
             String username = routingContext.request().getParam("username");
             String password = routingContext.request().getParam("password");
-            dataSet.getClients().forEach((user, pass) -> {
-                System.out.println(user +"  -  "+pass+" mm "+new StringValue("test3").getValue().equals(user));
-            });
 
-            System.out.println(dataSet.hasAccount(username)+"'"+username+"'"+dataSet.getClients().containsKey(username)+"---"+"test3".equals(username));
             if(dataSet.hasAccount(username)){
-                System.out.println("'"+username+"'");
 
                 if(dataSet.isLoginWith(username, sha1(password))){
 
@@ -39,6 +36,7 @@ public class handlePostLogin implements Handler<RoutingContext> {
                     routingContext.response().putHeader("content-length", String.valueOf(re.length()));
                     routingContext.response().setStatusCode(200);
                     routingContext.response().end(re);
+                    averageCalc.addValue(System.currentTimeMillis() - begin);
                     return;
 
                 }else {

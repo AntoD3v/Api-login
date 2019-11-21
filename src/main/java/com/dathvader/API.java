@@ -30,19 +30,6 @@ public class API {
 
         runner.accept(vertx);
 
-        new Thread(){
-            @Override
-            public void run() {
-                try {
-                    sleep(5000);
-                    dataSet.getClients().forEach((user, pass) -> {
-                        System.out.println(user +"  -  "+pass);
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
     }
 
     public static void main(String[] args) {
